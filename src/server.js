@@ -1,3 +1,5 @@
+const config = require('./config.js');
+
 require('dotenv').config()
 
 const start = async () => {
@@ -6,7 +8,7 @@ const start = async () => {
     const connect = require('./connect.js')
     await connect()
     console.log('Connected to DB')
-    await app.listen(3000)
+    await app.listen(config.port)
     console.log('Server is listening')
   } catch (error) {
     console.error(error)
