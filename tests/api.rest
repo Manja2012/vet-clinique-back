@@ -1,0 +1,22 @@
+@baseUrl = http://localhost:3000/api
+
+###
+{{baseUrl}}/version
+
+###
+{{baseUrl}}/contacts
+
+
+###
+POST {{baseUrl}}/contacts HTTP/1.1
+Content-Type: application/json
+
+{
+  "name": "Marianna",
+  "phone": "+336123456789",
+  "email": "manja@example.com",
+  "message": "le message"
+}
+
+###
+DELETE  {{baseUrl}}/contacts/manja@example.com HTTP/1.1

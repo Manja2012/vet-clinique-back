@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const config = require('./config.js')
 
 const connect = () => {
-  mongoose.connect(config.MONGODB_URL)
+  mongoose.connect(config.mongoDbUrl)
 }
 
 module.exports = connect

@@ -1,7 +1,7 @@
-const app = require('./app.js');
 require('dotenv').config()
 
 const start = async () => {
+  const app = require('./app.js');
   try {
     const connect = require('./connect.js')
     await connect()

@@ -1,5 +1,13 @@
-const MONGODB_URL = process.env.MONGODB_URL
+const mongoDbUrl = process.env.MONGODB_URL
+const metaPassword = process.env.META_PASSWORD;
+const fromEmail = process.env.FROM_EMAIL;
+const apiKey = process.env.API_KEY;
+
 
 module.exports = {
-  MONGODB_URL
+  mongoDbUrl,
+  apiPrefix: '/api',
+  metaPassword,
+  fromEmail,
+  apiKey,
 }
