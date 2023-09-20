@@ -1,7 +1,5 @@
 const config = require('./config.js');
 
-require('dotenv').config()
-
 const start = async () => {
   const app = require('./app.js');
   try {

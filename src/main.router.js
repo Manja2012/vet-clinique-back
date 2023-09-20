@@ -2,7 +2,7 @@ const Router = require('express').Router
 
 const contacts = require('./contacts/contacts.controller.js')
 const reviews = require('./reviews/reviews.controller.js')
-const clients = require('./clients/clients.controller.js')
+// const clients = require('./clients/clients.controller.js')
 const appointments = require('./appointments/appointments.controller.js')
 
 const router = new Router()

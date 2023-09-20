@@ -18,7 +18,19 @@ const getAppointments = async (req, res) => {
   }
 };
 
+
 router.get('', getAppointments)
+const getAppointment = async (req, res) => {
+  try {
+    const appointment = await Appointment.findById(req.params.id);
+    console.log(appointment);
+    res.status(200).json(appointment);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json("Couldn't get emails: ", error.message);
+  }
+};
+router.get('/:id', getAppointment)
 
 const createAppointment = async (req, res) => {
   try {
@@ -49,21 +61,39 @@ const createAppointment = async (req, res) => {
           pass: config.metaPassword
         }
       }
+
+      const DateTime = new Date(date);
+      
       const transport = nodemailer.createTransport(nodemailerConfig);
       const emailData = {
         to: email,
         from: config.fromEmail,
-        subject: "Confirmation blablabla email",
-        html: `<p>Test email</p>`,
-        text: `Première ligne importante
+        subject: "Confirmer le RDV",
+        html: `<p>Madame(Monsieur) ${name},
+        Vous avez un rendez-vous le ${DateTime.toLocaleDateString('fr-FR', {
+          weekday: 'long',
+          day: 'numeric',
+          month: 'long',
+          year: 'numeric',
 
-          Et la suite ici
-        `
+          hour: '2-digit',
+          minute: '2-digit',
+        })} avec le docteur ${veterinaire} à la clinique "Biomir".</p>`,
+        text: `Madame(Monsieur) ${name},
+        Vous avez un rendez-vous le ${DateTime.toLocaleDateString('fr-FR', {
+          weekday: 'long',
+          day: 'numeric',
+          month: 'long',
+          year: 'numeric',
+
+          hour: '2-digit',
+          minute: '2-digit',
+        })} avec le docteur ${veterinaire} à la clinique "Biomir".`
       };
 
       await transport.sendMail(emailData)
       console.log("email send success")
-      res.status(201).json({ appointment: savedAppointment })
+      res.status(201).json(savedAppointment)
     } catch (error) {
       console.error(error)
       res.status(500).json({err: 1, message: error.message})

@@ -45,7 +45,7 @@ const createContact = async (req, res) => {
         port: 587,
         secure: false,
         auth: {
-          user: "mariannademchenko4@gmail.com",
+          user: config.fromEmail,
           pass: config.metaPassword
         }
       }
@@ -53,11 +53,12 @@ const createContact = async (req, res) => {
       const emailData = {
         to: email,
         from: config.fromEmail,
-        subject: "Confirmation blablabla email",
-        html: `<p>Test email</p>`,
-        text: `Première ligne importante
-
-          Et la suite ici
+        subject: "Confirmer le message",
+        html: `<p>Nous avons reçu votre message, merci
+        Bien à vous!
+        </p>`,
+        text: `Nous avons reçu votre message, merci
+        Bien à vous!
         `
       };
 
