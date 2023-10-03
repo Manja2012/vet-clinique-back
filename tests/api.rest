@@ -20,3 +20,22 @@ Content-Type: application/json
 
 ###
 DELETE  {{baseUrl}}/contacts/manja@example.com HTTP/1.1
+
+
+###
+POST {{baseUrl}}/auth/tokens HTTP/1.1
+Content-Type: application/json
+
+{
+  "email": "admin@example.com",
+  "password": "53CR37P455"
+}
+
+
+### Invalid token
+GET {{baseUrl}}/reviews HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ.eyJlbWFpbCI6ImFkbWluQGV4YW1wbGUuY29tIiwiaWF0IjoxNjk1NTU0NTE0LCJleHAiOjE2OTU1NTUxMTR9.P8Uniz84atloWmWee_iub6zp5I-vJn3cib_57Un8lYc
+
+### Valid token
+GET {{baseUrl}}/reviews HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQGV4YW1wbGUuY29tIiwiaWF0IjoxNjk1NTU0NTE0LCJleHAiOjE2OTU1NTUxMTR9.P8Uniz84atloWmWee_iub6zp5I-vJn3cib_57Un8lYc

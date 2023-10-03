@@ -1,11 +1,15 @@
 const Router = require('express').Router;
 const nodemailer = require('nodemailer');
+const checkJwt = require('../middlewares/check-jwt')
+const { checkAccessToken } = require('../utils/token-utils')
 const { validationResult } = require("express-validator");
 
 const Appointment = require("./appointment.model.js");
 const config = require('../config.js')
 
 const router = new Router();
+
+// GET
 
 const getAppointments = async (req, res) => {
   try {
@@ -17,7 +21,6 @@ const getAppointments = async (req, res) => {
     res.status(500).json("Couldn't get emails: ", error.message);
   }
 };
-
 
 router.get('', getAppointments)
 const getAppointment = async (req, res) => {
@@ -106,25 +109,102 @@ const createAppointment = async (req, res) => {
       .json({ message: error.message });
   }
 };
+ // POST
 
 router.post('', createAppointment)
 
-const removeAppointment = async (req, res) => {
-  try {
-    const id = req.params.id
+// const removeAppointment = async (req, res) => {
+//   try {
+//     const id = req.params.id
 
-    const toDelete = await Appointment.findById(id)
-    if (toDelete) {
-      await toDelete.deleteOne()
-      res.status(200).json({ deletedAppointment: toDelete})
-      return
-    }
-    res.status(200).json({ deletedAppointment: 'nothing to delete'})
-  } catch (error) {
-    console.error(error)
+//     const toDelete = await Appointment.findById(id)
+//     if (toDelete) {
+//       await toDelete.deleteOne()
+//       res.status(200).json({ deletedAppointment: toDelete})
+//       return
+//     }
+//     res.status(200).json({ deletedAppointment: 'nothing to delete'})
+//   } catch (error) {
+//     console.error(error)
+//   }
+// }
+
+// router.delete('/:id', removeAppointment)
+
+
+
+//////  /////// ///////
+
+    router.delete('/:id',checkJwt, async (req, res) => {
+          // 1. Vérifier que l'utilisateur est authentifié
+          const token = req.headers.authorization.replace('Bearer ', '')
+          // 1.1 Vérifier que le token est présent
+          if (!token) {
+            return res
+              .status(401)
+              .json({ message: 'Vous devez être authentifié pour accéder à cette ressource' })
+          }
+          // 1.2 Vérifier que le token est valide
+          try {
+            const decoded = checkAccessToken(token)
+            if (!decoded) {
+              throw new Error()
+            }
+          } catch (error) {
+            return res
+              .status(401)
+              .json({ message: 'Le token semble invalide' })
+          }
+        
+          const id = req.params.id
+          const toDelete = await Appointment.findById(id)
+          if (!toDelete) {
+            return res
+              .status(404)
+              .json({ message: 'Aucune review trouvée' })
+          }
+        
+          await Appointment.findByIdAndDelete(id)
+        
+          res.json(toDelete)
+        })
+        
+
+//////  PUT  ///////
+router.put('/:id',checkJwt, async (req, res) => {
+  // 1. Vérifier que l'utilisateur est authentifié
+  const token = req.headers.authorization.replace('Bearer ', '')
+  // 1.1 Vérifier que le token est présent
+  if (!token) {
+    return res
+      .status(401)
+      .json({ message: 'Vous devez être authentifié pour accéder à cette ressource' })
   }
-}
+  // 1.2 Vérifier que le token est valide
+  try {
+    const decoded = checkAccessToken(token)
+    if (!decoded) {
+      throw new Error()
+    }
+  } catch (error) {
+    return res
+      .status(401)
+      .json({ message: 'Le token semble invalide' })
+  }
 
-router.delete('/:id', removeAppointment)
+  const id = req.params.id
+  const toUpdate = await Appointment.findById(id)
+  if (!toUpdate) {
+    return res
+      .status(404)
+      .json({ message: 'Aucune review trouvée' })
+  }
+  const {veterinaire,name,date,email} = req.body
+  const updated = await Appointment.findByIdAndUpdate(id, {veterinaire,name,date,email}, {new:true})
+
+  res.json(updated)
+})
+
+
 
 module.exports = router
